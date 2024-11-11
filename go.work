@@ -1,0 +1,27 @@
+go 1.21.6
+use ./25-ecommerce
+use ./24-Pams
+use ./23-mongoapi
+use ./22-requests
+use ./21-buildapi
+use ./20-mymodule
+use ./19-urls
+use ./18-webrequest
+use ./17-opening-files
+use ./16-defer
+use ./15-methods
+use ./14-functions
+use ./13-for-loop
+use ./12-switchcase
+use ./11-if-else
+use ./10-structs
+use ./09-maps 
+use ./08-slices
+use ./07-array
+//use ./06-pointers
+use ./05-time
+use ./04-conversion
+use ./03-userinput
+use ./02-variables
+use ./01-hello
+ 
