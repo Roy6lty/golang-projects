@@ -83,7 +83,7 @@ func Signup() gin.HandlerFunc {
 			return
 		}
 
-		password := HashPassword(*user, password)
+		password := HashPassword(*user.Password)
 		user.Password = &password
 
 		user.Created_At, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
@@ -99,7 +99,7 @@ func Signup() gin.HandlerFunc {
 		_, insertErr := UserCollection.InsertOne(ctx, user)
 
 		if insertErr != nil {
-			c.JSON(http.StatusInternalServerError, gin.M{"error": "The user did not get created"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "The user did not get created"})
 		}
 		defer cancel()
 
@@ -176,5 +176,38 @@ func SearchProduct() gin.HandlerFunc {
 }
 
 func SearchProductByQuery() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var searchProducts []models.Product
+		queryParam := c.Query("name") //query parameter name
 
+		//check if param is empty
+
+		if queryParam == "" {
+			log.Println("query is empty")
+			c.Header("Content-Type", "application/json")
+			c.JSON(http.StatusNotFound, gin.H{"Error": "Invalid search index"})
+			c.Abort()
+			return
+		}
+		ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
+		defer cancel()
+
+		//query Database
+		searchQueryCursor, err := ProductCollection.Find(ctx, bson.M{"product_name": bson.M{"regex": queryParam}})
+
+		if err != nil {
+			c.IndentedJSON(404, "Product not found")
+			return
+		}
+
+		err = searchQueryCursor.All(ctx, &searchProducts)
+		if err != nil {
+			log.Println(err)
+			c.IndentedJSON(400, "invalid")
+			return
+		}
+		defer cancel()
+		c.IndentedJSON(200, searchProducts)
+
+	}
 }

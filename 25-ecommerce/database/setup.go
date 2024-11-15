@@ -11,13 +11,12 @@ import (
 )
 
 const connectionString = `mongodb://admin:pasword@0.0.0.0:27017`
-databaseName = "Ecommerce"
+const databaseName = "Ecommerce"
 
 // const dbName = "netflix"
 // const collectionName = "watchlist"
 
 //Most Important
-
 
 // connect with mongodb
 func DBSetup() *mongo.Client {
@@ -40,23 +39,21 @@ func DBSetup() *mongo.Client {
 	}
 	fmt.Println("Mongodb connection established")
 
-    return client
+	return client
 
 }
 
-
-var client *mongo.Client = DBSetup()
+var Client *mongo.Client = DBSetup()
 
 func UserData(client *mongo.Client, collectionName string) *mongo.Collection {
-    //Create a new collection for users
-    var userCollection *mongo.Collection = client.Database(databaseName).Collection(collectionName)
-    return userCollection
-
+	//Create a new collection for users
+	var userCollection *mongo.Collection = client.Database(databaseName).Collection(collectionName)
+	return userCollection
 
 }
 
-func ProductData(client *mongo.Client, collectionName string) *mongo.Collection{
-    var productCollection *mongo.Collection =client.Database(databaseName).Collection(collectionName)
-    return productCollection
+func ProductData(client *mongo.Client, collectionName string) *mongo.Collection {
+	var productCollection *mongo.Collection = client.Database(databaseName).Collection(collectionName)
+	return productCollection
 
 }
