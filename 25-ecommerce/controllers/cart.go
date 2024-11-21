@@ -35,7 +35,7 @@ func (app *Application) AddToCart() gin.HandlerFunc {
 		if productQueryID == "" {
 			log.Println("Product id is empty")
 
-			_ = c.AbortWithError(http.StatusBadRequest, errors.New("Product id is empty")) //returns a response with an error
+			_ = c.AbortWithError(http.StatusBadRequest, errors.New("Product ID is Empty")) //returns a response with an error
 			return
 		}
 
@@ -60,6 +60,7 @@ func (app *Application) AddToCart() gin.HandlerFunc {
 		err = database.AddProductToCart(ctx, app.prodCollection, app.userCollection, productID, userQueryID)
 		if err != nil {
 			c.IndentedJSON(http.StatusInternalServerError, err)
+
 		}
 		c.IndentedJSON(http.StatusOK, "Successfully added to cart")
 
@@ -136,9 +137,9 @@ func GetItemFromCart() gin.HandlerFunc {
 		//Key is a mongodb Keyword and value is the data you want this operation performed on
 
 		filter_match := bson.D{{Key: "Search", Value: bson.D{primitive.E{Key: "_id", Value: usert_id}}}}
-		unwind := bson.D{{Key: "$Unwind", Value: bson.D{primitive.E{Key: "path", Value: "$userCart"}}}}
-		grouping := bson.D{{Key: "$group", Value: bson.D{primitive.E{Key: "_id", Value: "$_id"}, {Key: "total", Value: bson.D{primitive.E{Key: "$sum", Value: "$userCart.price"}}}}}}
-		pointCursor, err := UserCollection.Aggregate(ctx, mongo.Pipeline(filter_match, unwind, grouping))
+		unwind := bson.D{{Key: "$unwind", Value: bson.D{primitive.E{Key: "path", Value: "$userCart"}}}}
+		grouping := bson.D{{Key: "$group", Value: bson.D{primitive.E{Key: "_id", Value: "$_id"}, {Key: "total", Value: bson.D{primitive.E{Key: "$sum", Value: "$usercart.price"}}}}}}
+		pointCursor, err := UserCollection.Aggregate(ctx, mongo.Pipeline{filter_match, unwind, grouping})
 
 		if err != nil {
 			log.Println(err)
@@ -174,7 +175,7 @@ func (app *Application) BuyFromCart() gin.HandlerFunc {
 			c.IndentedJSON(http.StatusInternalServerError, err)
 
 		}
-		c.IndentedJSON("Successfully placed an order")
+		c.IndentedJSON(200, "Successfully placed an order")
 
 	}
 

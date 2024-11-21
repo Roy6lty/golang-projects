@@ -1,9 +1,13 @@
+package main
+
 import (
 	"fmt"
 	"net/url"
 )
+
 const myurl string = "https://www.pillartechnologybackend.com.ng/docs#/"
-func main(){
+
+func main() {
 	fmt.Println("Welcome to handling URLs in golang ")
 	fmt.Println(myurl)
 
@@ -16,7 +20,7 @@ func main(){
 	fmt.Println(result.Port())
 	fmt.Println(result.RawQuery)
 
-	qparams := result.Query() // returns a key value pair for parameters 
+	qparams := result.Query() // returns a key value pair for parameters
 	fmt.Printf("The type of query parameters are: %T\n", qparams)
 
 	fmt.Println(qparams["coursename"])
@@ -26,15 +30,13 @@ func main(){
 	}
 
 	partsOfUrl := &url.URL{
-		Scheme: "https",
-		Path: "lco.dev",
-		Host: "/tutcss",
+		Scheme:  "https",
+		Path:    "lco.dev",
+		Host:    "/tutcss",
 		RawPath: "user=hitesh",
 	}
 
-		anotherURL := partsOfUrl.String()
-		fmt.Println(anotherURL)
-	
-
+	anotherURL := partsOfUrl.String()
+	fmt.Println(anotherURL)
 
 }

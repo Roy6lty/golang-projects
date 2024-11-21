@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const connectionString = `mongodb://admin:pasword@0.0.0.0:27017`
+const connectionString = `mongodb://admin:password@0.0.0.0:27017`
 const databaseName = "Ecommerce"
 
 // const dbName = "netflix"
