@@ -1,4 +1,7 @@
 go 1.21.6
+use ./28-concurrency
+use ./27-composition
+use ./26-site-map-crawler
 use ./25-ecommerce
 use ./24-Pams
 use ./23-mongoapi
