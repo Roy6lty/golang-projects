@@ -1,6 +1,31 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+	"runtime"
+)
+
+// func RepeatFunc[T any, K any](done <-chan K, fn func() T) <-chan T {
+// 	// This is a Generator
+// 	// This function accepts 2 parameters of type any with
+// 	// Generics
+// 	stream := make(chan T)
+// 	go func() {
+// 		defer close(stream)
+// 		// a while loop in golang is "for" without any argument
+// 		for {
+// 			select {
+// 			case <-done:
+// 				return
+// 			case stream <- fn():
+// 			}
+// 		}
+
+// 	}()
+// 	return stream
+
+// }
 
 func someFunc(num string) {
 	fmt.Println(num)
@@ -16,44 +41,29 @@ func doWork(done <-chan bool) {
 	}
 }
 
-func sliceToChannel(nums []int) <-chan int {
-	out := make(chan int) // create a channel unbuffered channel;
-
-	//since this is a go routine the main thread will not wait it wil go in to
-	// execute the next line while go routing running
-	//
-	go func() {
-		for _, n := range nums { // values from the slice into the channel
-			out <- n
-		}
-		close(out)
-	}()
-	return out
-}
-
-func sq(in <-chan int) <-chan int {
-	//recieves a channel as arg
-	//returns a channel as an arg
-
-	out := make(chan int)
-	go func() {
-		for n := range in { //taking values from the first channel feeding it into the second
-			out <- n * n
-		}
-		close(out)
-	}()
-	return out
-}
-
-func repeatFunc[T any, K any](done <-chan K, fn func() T) {
-	go func() {
-		defer close(stream)
-		// a while loop in golang is "for" without any argument
-
-	}()
-
-}
 func main() {
+	done1 := make(chan int)
+	defer close(done1)
+
+	randNumFetcher := func() int { return rand.Intn(5000000000) }
+	randIntStream := RepeatFunc(done1, randNumFetcher)
+	//primeStream := PrimeFinder(done1, randIntStream)
+	// for rando := range Take(done1, primeStream, 10) {
+	// 	fmt.Println(rando)
+	// }
+
+	//fan Out
+	CPUCoreCount := runtime.NumCPU() // returnnumber of cpu core
+	PrimeFinderChannels := make([]<-chan int, CPUCoreCount)
+	for i := 0; i < CPUCoreCount; i++ {
+		PrimeFinderChannels[i] = PrimeFinder(done1, randIntStream)
+	}
+
+	//fan in
+	fannedInStream := FanIn(done1, PrimeFinderChannels...)
+	for rando := range Take(done1, fannedInStream, 10) {
+		fmt.Println(rando)
+	}
 	go someFunc("1")
 	go someFunc("2")
 	go someFunc("3")
